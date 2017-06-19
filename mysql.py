@@ -386,7 +386,7 @@ def fetch_mysql_slave_stats(conn):
 		else:
 			channel_name = ''
 
-		status['relay_log_space%s' % channel_name] = slave_row['Relay_Log_Space'],
+		status['relay_log_space%s' % channel_name] = slave_row['Relay_Log_Space']
 		status['slave_lag%s' % channel_name] = slave_row['Seconds_Behind_Master'] if slave_row[
 																						 'Seconds_Behind_Master'] != None else 0,
 
