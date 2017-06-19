@@ -377,6 +377,8 @@ def fetch_mysql_master_stats(conn):
 
 def fetch_mysql_slave_stats(conn):
 	result    = mysql_query(conn, 'SHOW SLAVE STATUS')
+
+	status = {}
 	for slave_row in result.fetchall():
 
 		if 'Channel_Name' in slave_row:
@@ -384,15 +386,12 @@ def fetch_mysql_slave_stats(conn):
 		else:
 			channel_name = ''
 
-		status = {
-			'relay_log_space%s' % channel_name: slave_row['Relay_Log_Space'],
-			'slave_lag%s' % channel_name: slave_row['Seconds_Behind_Master'] if slave_row[
-																					'Seconds_Behind_Master'] != None else 0,
-		}
+		status['relay_log_space%s' % channel_name] = slave_row['Relay_Log_Space'],
+		status['slave_lag%s' % channel_name] = slave_row['Seconds_Behind_Master'] if slave_row[
+																						 'Seconds_Behind_Master'] != None else 0,
 
 		status['slave_running' + channel_name] = 1 if slave_row['Slave_SQL_Running'] == 'Yes' else 0
 		status['slave_stopped' + channel_name] = 1 if slave_row['Slave_SQL_Running'] != 'Yes' else 0
-
 	return status
 
 	# slave_row = result.fetchone()
