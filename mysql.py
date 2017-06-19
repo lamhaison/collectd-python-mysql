@@ -392,7 +392,8 @@ def fetch_mysql_slave_stats(conn):
 
 		status['slave_running' + channel_name] = 1 if slave_row['Slave_SQL_Running'] == 'Yes' else 0
 		status['slave_stopped' + channel_name] = 1 if slave_row['Slave_SQL_Running'] != 'Yes' else 0
-		return status
+
+	return status
 
 	# slave_row = result.fetchone()
 	# if slave_row is None:
