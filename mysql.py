@@ -388,7 +388,7 @@ def fetch_mysql_slave_stats(conn):
 
 		status['relay_log_space%s' % channel_name] = slave_row['Relay_Log_Space']
 		status['slave_lag%s' % channel_name] = slave_row['Seconds_Behind_Master'] if slave_row[
-																						 'Seconds_Behind_Master'] != None else 0,
+																						 'Seconds_Behind_Master'] != None else 0
 
 		status['slave_running' + channel_name] = 1 if slave_row['Slave_SQL_Running'] == 'Yes' else 0
 		status['slave_stopped' + channel_name] = 1 if slave_row['Slave_SQL_Running'] != 'Yes' else 0
