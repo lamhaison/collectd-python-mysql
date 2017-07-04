@@ -167,7 +167,7 @@ MYSQL_STATUS_VARS = {
 	'wsrep_cluster_size': 'gauge',
 	'wsrep_connected': 'gauge',
 	'wsrep_ready': 'gauge',
-	'wsrep_local_state_comment': 'gauge',
+	'wsrep_local_state': 'gauge',
 	# 'wsrep_commit_oooe': 'gauge',
 	# 'wsrep_commit_oool': 'gauge',
 	# 'wsrep_commit_window': 'gauge',
