@@ -164,7 +164,10 @@ MYSQL_STATUS_VARS = {
 	# 'wsrep_cert_deps_distance': 'gauge',
 	# 'wsrep_cert_index_size': 'gauge',
 	# 'wsrep_cert_interval': 'gauge',
-	# 'wsrep_cluster_size': 'gauge',
+	'wsrep_cluster_size': 'gauge',
+	'wsrep_connected': 'gauge',
+	'wsrep_ready': 'gauge',
+	'wsrep_local_state_comment': 'gauge',
 	# 'wsrep_commit_oooe': 'gauge',
 	# 'wsrep_commit_oool': 'gauge',
 	# 'wsrep_commit_window': 'gauge',
@@ -346,6 +349,12 @@ def fetch_mysql_status(conn):
 	status = {}
 	for row in result.fetchall():
 		status[row['Variable_name']] = row['Value']
+
+		# Galera metric translation
+		if row['Variable_name'] == 'wsrep_connected':
+			status[row['Variable_name']] = 1 if row['Value'] == 'ON' else 0
+		if row['Variable_name'] == 'wsrep_ready':
+			status[row['Variable_name']] = 1 if row['Value'] == 'ON' else 0
 
 	# calculate the number of unpurged txns from existing variables
 	if 'Innodb_max_trx_id' in status:
