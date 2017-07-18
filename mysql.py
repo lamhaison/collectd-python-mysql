@@ -406,9 +406,9 @@ def fetch_mysql_slave_stats(conn):
                                                                                          'Seconds_Behind_Master'] != None else 0
 
         status['slave_running' + channel_name] = 1 if slave_row['Slave_SQL_Running'] == 'Yes' \
-                                                      and slave_row['Slave_IO_Running'] == 'YES' else 0
+                                                      and slave_row['Slave_IO_Running'] == 'Yes' else 0
         status['slave_stopped' + channel_name] = 1 if slave_row['Slave_SQL_Running'] != 'Yes' \
-                                                      or slave_row['Slave_IO_Running'] != 'YES' else 0
+                                                      or slave_row['Slave_IO_Running'] != 'Yes' else 0
     return status
 
 
