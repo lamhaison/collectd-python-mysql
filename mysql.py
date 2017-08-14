@@ -382,31 +382,24 @@ def fetch_mysql_master_stats(conn):
 
 
 def fetch_mysql_slave_stats(conn):
-    result = mysql_query(conn, 'SHOW SLAVE STATUS')
-    slave_row = result.fetchone()
-    if slave_row is None:
-        return {}
+    result = mysql_query(conn, 'SHOW ALL SLAVES STATUS')
 
-    status = {
-        'relay_log_space': slave_row['Relay_Log_Space'],
-        'slave_lag': slave_row['Seconds_Behind_Master'] if slave_row['Seconds_Behind_Master'] != None else 0,
-    }
+    status = {}
+    for slave_row in result.fetchall():
 
-    if MYSQL_CONFIG['HeartbeatTable']:
-        query = """
-			SELECT MAX(UNIX_TIMESTAMP() - UNIX_TIMESTAMP(ts)) AS delay
-			FROM %s
-			WHERE server_id = %s
-		""" % (MYSQL_CONFIG['HeartbeatTable'], slave_row['Master_Server_Id'])
-        result = mysql_query(conn, query)
-        row = result.fetchone()
-        if 'delay' in row and row['delay'] != None:
-            status['slave_lag'] = row['delay']
+        if 'Channel_Name' in slave_row:
+            channel_name = '_%s' % slave_row['Channel_Name']
+        else:
+            channel_name = ''
 
-    status['slave_running'] = 1 if slave_row['Slave_SQL_Running'] == 'Yes' \
-                                                  and slave_row['Slave_IO_Running'] == 'Yes' else 0
-    status['slave_stopped'] = 1 if slave_row['Slave_SQL_Running'] != 'Yes' \
-                                                  or slave_row['Slave_IO_Running'] != 'Yes' else 0
+        status['relay_log_space%s' % channel_name] = slave_row['Relay_Log_Space']
+        status['slave_lag%s' % channel_name] = slave_row['Seconds_Behind_Master'] if slave_row[
+                                                                                         'Seconds_Behind_Master'] != None else 0
+
+        status['slave_running' + channel_name] = 1 if slave_row['Slave_SQL_Running'] == 'Yes' and slave_row[
+                                                                                                      'Slave_IO_Running'] == 'Yes' else 0
+        status['slave_stopped' + channel_name] = 1 if slave_row['Slave_SQL_Running'] != 'Yes' or slave_row[
+                                                                                                     'Slave_IO_Running'] != 'Yes' else 0
     return status
 
 
