@@ -387,8 +387,8 @@ def fetch_mysql_slave_stats(conn):
     status = {}
     for slave_row in result.fetchall():
 
-        if 'Channel_Name' in slave_row:
-            channel_name = '_%s' % slave_row['Channel_Name']
+        if 'Connection_name' in slave_row:
+            channel_name = '_%s' % slave_row['Connection_name']
         else:
             channel_name = ''
 
